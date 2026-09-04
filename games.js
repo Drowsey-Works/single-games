@@ -3072,7 +3072,7 @@ function generateAllSections() {
     }
 
     section.appendChild(buttonsContainer);
-    container.appendChild(section);
+    setTimeout( () => { container.appendChild(section); }, 1000 );
   });
 
   generateSidebar(allChars, filesByChar);
