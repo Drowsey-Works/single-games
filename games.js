@@ -2956,7 +2956,7 @@ let files = [
 "clsausageflip",
 "clswitch",
 "clwariowaretouched",
-"zen-fisher(v5.5)"
+"zen-fisher"
 ];
 function generateAllSections() {
   try {
@@ -3048,7 +3048,7 @@ function generateAllSections() {
           const encoded = encodeURIComponent(normalized);
 
           fetch(
-            `https://cdn.jsdelivr.net/gh/bubbls/ugs-singlefile/UGS-Files/${encoded}?t=${Date.now()}`,
+            `https://cdn.jsdelivr.net/gh/Drowsey-Wroks/UGS-Files/${encoded}?t=${Date.now()}`,
           )
             .then((response) => response.text())
             .then((text) => {
