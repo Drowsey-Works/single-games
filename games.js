@@ -2955,7 +2955,8 @@ let files = [
 "clpokeyellowlegacy",
 "clsausageflip",
 "clswitch",
-"clwariowaretouched"
+"clwariowaretouched",
+"zen-fisher(v5.5)"
 ];
 function generateAllSections() {
   try {
