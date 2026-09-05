@@ -2983,7 +2983,7 @@ function generateAllSections() {
 
   files.forEach((file) => {
     const lower = file.toLowerCase();
-    if (lower.startsWith("cl")) {
+    if (lower.startsWith("drw_")) {
       const aftercl = lower.substring(2);
       if (aftercl.length > 0) {
         const firstChar = aftercl[0].toUpperCase();
@@ -3023,7 +3023,7 @@ function generateAllSections() {
           const encoded = encodeURIComponent(normalized);
 
           fetch(
-            `https://cdn.jsdelivr.net/gh/bubbls/ugs-singlefile/UGS-Files/${encoded}?t=${Date.now()}`,
+            `https://cdn.jsdelivr.net/gh/Drowsey-Works/single-games/UGS-Files/${encoded}?t=${Date.now()}`,
           )
             .then((response) => response.text())
             .then((text) => {
