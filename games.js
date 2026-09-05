@@ -3008,8 +3008,8 @@ function generateAllSections() {
 
   files.forEach((file) => {
     const lower = file.toLowerCase();
-    if (lower.startsWith("cl")) {
-      const aftercl = lower.substring(2);
+    if (lower.startsWith("drw_")) {
+      const aftercl = lower.substring(4);
       if (aftercl.length > 0) {
         const firstChar = aftercl[0].toUpperCase();
         if (filesByChar[firstChar]) {
@@ -3073,7 +3073,7 @@ function generateAllSections() {
     }
 
     section.appendChild(buttonsContainer);
-    setTimeout( () => { container.appendChild(section); }, 1000 );
+    container.appendChild(section);
   });
 
   generateSidebar(allChars, filesByChar);
