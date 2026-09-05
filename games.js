@@ -2960,66 +2960,65 @@ let files = [
 ];
 function generateAllSections() {
   try {
-    document.getElementById("lolbutton").remove();
+    document.getElementById("lolbutton")?.remove();
   } catch (e) {}
+  
   const allChars = [
-    "0",
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "A",
-    "B",
-    "C",
-    "D",
-    "E",
-    "F",
-    "G",
-    "H",
-    "I",
-    "J",
-    "K",
-    "L",
-    "M",
-    "N",
-    "O",
-    "P",
-    "Q",
-    "R",
-    "S",
-    "T",
-    "U",
-    "V",
-    "W",
-    "X",
-    "Y",
-    "Z",
+    "0","1","2","3","4","5","6","7","8","9",
+    "A","B","C","D","E","F","G","H","I","J",
+    "K","L","M","N","O","P","Q","R","S","T",
+    "U","V","W","X","Y","Z"
   ];
 
-   const filesByChar = {};
+  const filesByChar = {};
   allChars.forEach((char) => {
     filesByChar[char] = [];
   });
 
+  // Process ALL files
   files.forEach((file) => {
     const lower = file.toLowerCase();
+    let charToUse = null;
+    
+    // Handle drw_ prefix (your games)
     if (lower.startsWith("drw_")) {
-      const aftercl = lower.substring(4);
-      if (aftercl.length > 0) {
-        const firstChar = aftercl[0].toUpperCase();
-        if (filesByChar[firstChar]) {
-          filesByChar[firstChar].push(file);
-        }
+      const afterPrefix = lower.substring(4);
+      if (afterPrefix.length > 0) {
+        charToUse = afterPrefix[0].toUpperCase();
       }
+    }
+    // Handle cl prefix (original games)
+    else if (lower.startsWith("cl")) {
+      const afterPrefix = lower.substring(2);
+      if (afterPrefix.length > 0) {
+        charToUse = afterPrefix[0].toUpperCase();
+      }
+    }
+    // Handle files with no prefix (use first character)
+    else {
+      charToUse = lower[0].toUpperCase();
+    }
+    
+    if (charToUse && filesByChar[charToUse]) {
+      filesByChar[charToUse].push(file);
     }
   });
 
+  // Get container - FIX: Check if it exists
   const container = document.getElementById("sections-container");
+  if (!container) {
+    console.error('Container #sections-container not found! Creating it...');
+    // Create container if it doesn't exist
+    const newContainer = document.createElement('div');
+    newContainer.id = 'sections-container';
+    document.body.prepend(newContainer);
+    // Use the new container
+    container = newContainer;
+  }
+
+  // Clear container
+  container.innerHTML = '';
+
   allChars.forEach((char) => {
     const section = document.createElement("div");
     section.className = "letter-section";
@@ -3047,10 +3046,14 @@ function generateAllSections() {
           const normalized = normalizeFileName(file);
           const encoded = encodeURIComponent(normalized);
 
+          // ✅ CORRECT URL - Your repo
           fetch(
-            `https://cdn.jsdelivr.net/gh/Drowsey-Works/UGS-Files/${encoded}?t=${Date.now()}`,
+            `https://cdn.jsdelivr.net/gh/Drowsey-Works/single-games/UGS-Files/${encoded}?t=${Date.now()}`
           )
-            .then((response) => response.text())
+            .then((response) => {
+              if (!response.ok) throw new Error(`HTTP ${response.status}`);
+              return response.text();
+            })
             .then((text) => {
               const newWin = window.open("about:blank", "_blank");
               if (newWin) {
@@ -3058,6 +3061,10 @@ function generateAllSections() {
                 newWin.document.write(text);
                 newWin.document.close();
               }
+            })
+            .catch(err => {
+              console.error('Failed to load game:', file, err);
+              alert(`Failed to load ${file}. Make sure it exists in UGS-Files/`);
             });
         };
         btn.style.width = "100%";
@@ -3073,6 +3080,7 @@ function generateAllSections() {
     }
 
     section.appendChild(buttonsContainer);
+    // ✅ FIX: No timeout needed now
     container.appendChild(section);
   });
 
@@ -3081,6 +3089,17 @@ function generateAllSections() {
 
 function generateSidebar(allChars, filesByChar) {
   const sidebar = document.getElementById("sidebar");
+  if (!sidebar) {
+    console.error('Sidebar #sidebar not found! Creating it...');
+    const newSidebar = document.createElement('div');
+    newSidebar.id = 'sidebar';
+    document.body.prepend(newSidebar);
+    // Use the new sidebar
+    sidebar = newSidebar;
+  }
+  
+  // Clear sidebar
+  sidebar.innerHTML = '';
 
   allChars.forEach((char) => {
     const btn = document.createElement("button");
@@ -3104,4 +3123,8 @@ function generateSidebar(allChars, filesByChar) {
     sidebar.appendChild(btn);
   });
 }
+
+// Auto-run when loaded
 generateAllSections();
+
+console.log('✅ Games loaded:', files.length);
